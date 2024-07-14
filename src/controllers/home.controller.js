@@ -13,10 +13,13 @@ export default class HomeController {
   async addCsvFile(req, res) {
     try {
       const csvFileName = req.file;
-      if (!csvFileName.filename.includes(".csv"))
+      if (!csvFileName.filename.includes(".csv")) {
+        const files = await CsvModel.find({});
         return res.render("homePage", {
           errorMessage: "Please enter csv File only",
+          files: files,
         });
+      }
       let results = [];
       fs.createReadStream(csvFileName.path)
         .pipe(csv())
@@ -30,14 +33,12 @@ export default class HomeController {
               // path: newPath
             });
             await csvData.save();
-          } else {
-            res.status(400).send("No file uploaded");
           }
           return res.redirect("/app/");
         });
     } catch (err) {
       console.log(err);
-      return res.render("homePage", { errorMessage: err });
+      return res.render("homePage", { files: null, errorMessage: err });
     }
   }
 
@@ -47,7 +48,10 @@ export default class HomeController {
       const csvFileName = req.query.filename;
       const page = req.query.page;
       if (!csvFileName) {
-        return res.render("homePage", { errorMessage: "File Not found" });
+        return res.render("homePage", {
+          files: null,
+          errorMessage: "File Not found",
+        });
       }
       const uploadPath = path.join("./public/uploads", csvFileName);
       const fileData = await new Promise((resolve, reject) => {
@@ -72,7 +76,7 @@ export default class HomeController {
       res.render("csvView", { errorMessage: null, fileData });
     } catch (err) {
       console.log(err);
-      return res.render("homePage", { errorMessage: err });
+      return res.render("homePage", { files: null, errorMessage: err });
     }
   }
 
@@ -92,7 +96,7 @@ export default class HomeController {
       return res.redirect("/app/");
     } catch (err) {
       console.log(err);
-      return res.render("homePage", { errorMessage: err });
+      return res.render("homePage", { files: null, errorMessage: err });
     }
   }
 }

@@ -23,7 +23,8 @@
           </div>
         </form>
         <!-- uploaded file table -->
-        <%if(files.length>0){%>
+        <%if(files!=null){%>
+          <% if(files.length>0){%>
         <table class="table table-hover"><h4 class="fw-bold">Uploaded Files</h4>
             <thead class="table-dark">
               <tr>
@@ -46,7 +47,7 @@
             <%}%>
           </tbody>
         </table>   
-        <%}%>
+        <%}}%>
       </div>
     </div>
   </div>
