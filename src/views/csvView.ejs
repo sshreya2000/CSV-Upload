@@ -1,0 +1,51 @@
+<div class="container-fluid home">
+    <!-- error message displayed -->
+    <% if(errorMessage){ %>
+      <div class="alert alert-danger" role="alert">
+          <%= errorMessage %>
+      </div>
+      <% } %>
+      <div class="container">
+        <div class="row csvClass">
+          <!-- search box -->
+                <%if(fileData){%>
+                    <h1>CSV File: <%= fileData.csvFileName %></h1>
+                    <div class="col-4">
+                    <input type="text" id="search" class="form-control" placeholder="Search...">
+                  </div>
+                <%}%>
+            <div class="col-12">
+              <!-- table data -->
+                <table class="table table-hover table-light">
+                    <thead class="table-dark">
+                        <tr>
+                          <% fileData.header_row.forEach(function(cell, index) { %>
+                          <th><%= cell %><button id="<%= index %>" data-order="desc" class="btn btn-dark sort"><i class="fa-solid fa-sort"></i></button></th>
+                          <% }); %>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% let start=(fileData.page-1)*100+1; let end; if(fileData.page*100<fileData.data_rows.length){end=fileData.page*100; }else {end=fileData.data_rows.length;}%>
+                        <% for(let i=start;i<=end;i++) { %>
+                        <tr>
+                          <%let row=fileData.data_rows[i-1]%>
+                          <% Object.values(row).forEach(function(cell) { %>
+                          <td><%= cell %></td>
+                          <% }); %>
+                        </tr>
+                        <% }; %>
+                      </tbody>
+                </table>
+                <!-- pagination -->
+                <ul class="pagination justify-content-center">
+                  <% const pages=((fileData.data_rows.length/100)<1)?1:(Math.ceil(fileData.data_rows.length/100));%>
+                  <% if((fileData.page-1)<=pages && (fileData.page-1)>=1){%><li class="page-item"><a class="page-link" href="/app/viewFile?filename=<%= fileData.csvFileName %>&page=<%= fileData.page-1 %>">Previous</a></li><%}%>
+                  <% for(let i=1;i<=pages;i++){%>
+                  <li class="page-item"><a class="page-link" href="/app/viewFile?filename=<%= fileData.csvFileName %>&page=<%=i%>"><%=i%></a></li>
+                  <%}%>
+                  <% if((Number(fileData.page)+1)<=pages && (Number(fileData.page)+1)>=1){%><li class="page-item"><a class="page-link" href="/app/viewFile?filename=<%= fileData.csvFileName %>&page=<%= Number(fileData.page)+1 %>">Next</a></li><%}%>
+                </ul>
+            </div>
+        </div>
+      </div>
+    </div>

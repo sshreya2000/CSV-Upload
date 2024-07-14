@@ -1,0 +1,52 @@
+<div class="container-fluid home">
+  <!-- error message displayed -->
+  <% if(errorMessage){ %>
+    <div class="alert alert-danger" role="alert">
+        <%= errorMessage %>
+    </div>
+    <% } %>
+    <div class="container main">
+      <div class="p-6">
+        <h1 class="main-heading fw-bold"><img src="/images/logoimg.png" alt="Logo" width="50" height="30"/> CSV UPLOADER</h1>
+        <h6 class="explain text-muted">Reads CSV file and display its contents in tabular form</h6>
+        <hr>
+        <!-- file upload input -->
+        <form action="/app/fileUpload" method="post" enctype="multipart/form-data">
+          <div class="mb-3">
+            <label for="formFile" class="form-label fs-2 fw-bold">Please upload your CSV file</label>
+            <div class="fileupload">
+            <input class="form-control"  name="csvFile" type="file" accept=".csv" id="formFile">
+            <div class="col-1">
+              <button class="btn btn-primary" type="submit">Submit</button>
+            </div>
+          </div>
+          </div>
+        </form>
+        <!-- uploaded file table -->
+        <%if(files.length>0){%>
+        <table class="table table-hover"><h4 class="fw-bold">Uploaded Files</h4>
+            <thead class="table-dark">
+              <tr>
+                <th scope="col">#</th>
+                <th class="text-center col-md-5" scope="col">Name</th>
+                <th class="text-center col-md-6" scope="col">Date</th>
+                <th class="text-center col-md-1" scope="col">View</th>
+                <th class="text-center col-md-1" scope="col">Delete</th>
+              </tr>
+            </thead>
+          <tbody>
+            <%for(let i=0;i<(files.length);i++){%>
+            <tr>
+              <th scope="row"><%=i+1%></th>
+              <td class="text-center col-md-5"><%=files[i].filename%></td>
+              <td class="text-center col-md-6"><%=files[i].createdAt.toISOString()%></td>
+              <td class="text-center col-md-1"><a href="/app/viewFile?filename=<%= files[i].filename %>&page=1"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+              <td class="text-center col-md-1"><a href="/app/deleteFile?filename=<%= files[i].filename %>"><i class="fa-solid fa-trash-can"></i></a></td>
+              </tr>
+            <%}%>
+          </tbody>
+        </table>   
+        <%}%>
+      </div>
+    </div>
+  </div>
